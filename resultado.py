@@ -111,18 +111,17 @@ class Resultado():
 
     @property
     def macro_f1(self):
-        #Atividade 1: substitua o none...lembre-se que já foi calculado o
-        #f1 por classe no atributo calculado correspondente.
-        #Lembre-se de como usar atributos calculados.
-        return None
+        # self.f1_por_classe.values() retorna um objeto do tipo dict_values, que não é suportado pelo método np.average
+        return np.average([f1 for f1 in self.f1_por_classe.values()])
 
     @property
     def acuracia(self):
         #quantidade de elementos previstos corretamente
         num_previstos_corretamente = 0
         for classe in range(len(self.mat_confusao)):
-            #Atividade 1: complete o código abaixo, substituindo o None
-            num_previstos_corretamente += None
+            # Os previstos corretamente estão na diagonal principal da matriz de confusão, 
+            #  ou seja, mat_confusao[classe][classe]
+            num_previstos_corretamente += self.mat_confusao[classe][classe]
 
         return num_previstos_corretamente/len(self.y)
 class Fold():
