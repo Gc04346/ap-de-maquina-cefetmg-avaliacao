@@ -150,17 +150,16 @@ class Fold():
         """
         #1. especifique o número de instancias da partição teste de cada fold usando
         #...o parametro val_k
-        num_instances_per_partition = None
+        num_instances_per_partition = len(df_dados) // val_k
         #folds de saida
         arr_folds = []
-
 
 
         for num_repeticao in range(num_repeticoes):
             #2. Embaralhe os dados: para isso, use o método sample para fazer uma amostra aleatória usando 100% dos dados. Use a seed passada como parametro
             #lembre-se que, para cada repetição, deve-se haver uma seed diferente
             #para isso, use seed+num_repeticao
-            df_dados_rand = None
+            df_dados_rand = df_dados.sample(frac=1, random_state=(seed+num_repeticao))
 
             #Impressão dos ids dos dados (exiba o print para testes)
             #print("Dados: "+str(df_dados_rand.index.values))
@@ -169,24 +168,24 @@ class Fold():
             for num_fold in range(val_k):
                 #2. especifique o inicio e fim do fold de teste. Caso seja o ultimo, o fim será o tamanho do vetor.
                 #Use num_instances_per_partition e num_fold para deliminar o inicio e fim do teste
-                ini_fold_to_predict = None
+                ini_fold_to_predict = num_fold * num_instances_per_partition
                 if num_fold < val_k-1:
-                    fim_fold_to_predict = None
+                    fim_fold_to_predict = ini_fold_to_predict + num_instances_per_partition
                 else:
-                    fim_fold_to_predict = None
+                    fim_fold_to_predict = len(df_dados)
 
                 #print(f"Inicio: {ini_fold_to_predict} -  Fim: {fim_fold_to_predict}")
                 #3. por meio do df_dados_rand, obtenha os dados de avaliação (teste ou validação)
-                df_to_predict = None
+                df_to_predict = df_dados_rand[ini_fold_to_predict:fim_fold_to_predict]
                 #print(df_to_predict)
 
                 #4. Crie o treino por meio dos dados originais (df_dados_rand),
                 #removendo os dados que serão avaliados  (df_to_predict)
-                df_treino = None
+                df_treino = df_dados_rand.drop(index=df_to_predict.index)
                 #print(df_treino)
 
                 #5. Crie o fold (objeto da classe Fold) para adicioná-lo no vetor
-                fold = None
+                fold = Fold(df_treino, df_to_predict, col_classe, num_folds_validacao, num_repeticoes_validacao)
                 arr_folds.append(fold)
 
 
